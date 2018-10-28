@@ -28,6 +28,23 @@ def index_min(array, n):
 	return minimym, index
 
 
+def index_max(array, n):
+	array_new=[]
+	for i in range(len(array)):
+		array_new.append(array[i][n])
+	maximym = max(array_new)
+	indexmax=array_new.index(maximym)
+	return maximym, indexmax
+
+
+def rect_to_bb(rect):
+	x = rect.left()
+	y = rect.top()
+	w = rect.right() - x
+	h = rect.bottom() - y
+	return (x, y, w, h)
+
+
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat') 
@@ -66,10 +83,13 @@ while True:
 
 	rects = detector(gray, 0)
 	cv2.imshow("Frame", frame)
+	
+	max_face=[]
 
 	# loop over the face detections
 	if (len(rects)>0):
 
+		i=0
 		for rect in rects:
 			shape_cam = predictor(gray, rect)
 			shape2 = face_utils.shape_to_np(shape_cam)
@@ -80,8 +100,24 @@ while True:
 				cv2.circle(frame, (x, y), 0, (0, 255, 255), -1)
 	    
 			cv2.imshow("Frame", frame)
-		    
+			
+			x, y, w, h = rect_to_bb(rect)
+			max_face.append([[],[]])
+			max_face[i][0]=rect
+			max_face[i][1]=w*h
+
+			
+			i+=1
+
+
+		maximym, indexmax = index_max(max_face,1)
+
+		shape_cam = predictor(gray, max_face[indexmax][0])
+		shape2 = face_utils.shape_to_np(shape_cam)
+
+		
 		face_descriptor_cam= facerec.compute_face_descriptor(frame, shape_cam)
+
 		for i in range(len(face_base)):
 			face_base[i][2]=distance.euclidean(face_base[i][1], face_descriptor_cam)
 		minimym, index =index_min(face_base,2)
