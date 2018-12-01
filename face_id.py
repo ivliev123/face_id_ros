@@ -17,6 +17,8 @@ import dlib
 import time
 import cv2
 import cPickle as pickle
+import rospy
+from std_msgs.msg import String
 
 
 
@@ -49,6 +51,9 @@ def rect_to_bb(rect):
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat') 
+print("[INFO] linit ros 'face recognize'...")
+rospy.init_node('facerecognize')
+pub = rospy.Publisher('face', String)
 
 face_base = []
 
@@ -63,7 +68,6 @@ with open("dictionary.pkl", "rb") as f:
 		pass
 
 
-print "trew"
 
 print("[INFO] loading facial landmark predictor...")
 detector = dlib.get_frontal_face_detector()
@@ -128,6 +132,7 @@ while True:
 		minimym, index =index_min(face_base,2)
 		if (minimym < 0.5):
 			print(face_base[index][0])
+			pub.publish(String(face_base[index][0]))
 
 	key = cv2.waitKey(1) & 0xFF
 
