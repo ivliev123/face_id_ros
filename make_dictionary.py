@@ -1,4 +1,6 @@
 # python3 make_id_finish6.py  -m 'w' -t 'ID.txt'
+## -*- coding: utf-8 -*-
+
 
 try:
     import cPickle as pickle
@@ -16,7 +18,8 @@ import cv2
 import imutils
 import os
 import fnmatch
-
+import os
+from fnmatch import fnmatch
 
 
 def index_min(array, n):
@@ -61,6 +64,24 @@ dictionary=[]
 
 i=0
 # read from file
+root = '/home/ivliev/Рабочий стол/face_id_ros/info'
+pattern = "*.jpg"
+
+for path, subdirs, files in os.walk(root):
+	for name in subdirs:
+		#if fnmatch(name, pattern):
+		#print name #(os.path.join(path, name))
+		for path2, subdirs2, files2 in os.walk(os.path.join(path, name)):
+			for name2 in files2:
+				if fnmatch(name2, pattern):
+					dir_name2=(os.path.join(path2, name2))
+					print dir_name2
+					dictionary.append([[],[],[]])
+					dictionary[i][0]=name
+					dictionary[i][1]=np.array(get_face_descriptor(dir_name2))
+					dictionary[i][2]=0
+					i+=1
+"""
 os.chdir('info/')
 for file in os.listdir('.'):
 	if fnmatch.fnmatch(file, '*.jpg'):
@@ -77,7 +98,7 @@ for file in os.listdir('.'):
 		i+=1
 
 os.chdir('..')
-
+"""
 
 #with open("dictionary.pkl","wb") as f:
 f=open("dictionary.pkl","wb")
