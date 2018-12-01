@@ -2,6 +2,7 @@
 # python3 seve_deskriptor.py
 # python3 seve_deskriptor.py  --picamera 1
 
+## -*- coding: utf-8 -*-
 
 
 from skimage import io
@@ -15,7 +16,7 @@ import imutils
 import dlib
 import time
 import cv2
-import pickle
+import cPickle as pickle
 
 
 
@@ -49,16 +50,20 @@ detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat') 
 
+face_base = []
 
-
-with open("dictionary.pickle", "rb") as f:
+with open("dictionary.pkl", "rb") as f:
 	face_base = []
 	try:
+	
 		while True:
 			face_base.append(pickle.load(f))
 
 	except (EOFError, pickle.UnpicklingError):
 		pass
+
+
+print "trew"
 
 print("[INFO] loading facial landmark predictor...")
 detector = dlib.get_frontal_face_detector()
@@ -132,3 +137,5 @@ while True:
         	# do a bit of cleanup
 		cv2.destroyAllWindows()
 		vs.stop()
+
+

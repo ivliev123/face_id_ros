@@ -1,6 +1,9 @@
 # python3 make_id_finish6.py  -m 'w' -t 'ID.txt'
 
-import pickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 import argparse
 import dlib
 from imutils import face_utils
@@ -57,7 +60,7 @@ array_name=[]
 dictionary=[]
 
 i=0
-# чтение из файловой системы
+# read from file
 os.chdir('info/')
 for file in os.listdir('.'):
 	if fnmatch.fnmatch(file, '*.jpg'):
@@ -65,8 +68,9 @@ for file in os.listdir('.'):
 
 		dictionary.append([[],[],[]])
 		dictionary[i][0]=name
-		dictionary[i][1]=get_face_descriptor(str(name)+'.jpg')
+		dictionary[i][1]=np.array(get_face_descriptor(str(name)+'.jpg'))
 		dictionary[i][2]=0
+		#print dictionary[i][1]
 
 		array_name.append(name)
 		print(name+'.jpg')
@@ -75,10 +79,11 @@ for file in os.listdir('.'):
 os.chdir('..')
 
 
-with open("dictionary.pickle","wb") as f:
-	for i in range(len(dictionary)):
-		pickle.dump(dictionary[i], f)
-
+#with open("dictionary.pkl","wb") as f:
+f=open("dictionary.pkl","wb")
+for i in range(len(dictionary)):
+	pickle.dump(dictionary[i], f)
+f.close()
 
 
 
